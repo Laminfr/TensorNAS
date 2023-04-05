@@ -324,7 +324,6 @@ def _GetNormalizationAccVectorEnd(config):
 
     return float(_GetGoals(config)["NormalizationAccVectorEnd"])
 
-
 def _GetNormalizationVectorSteps(config):
 
     return int(_GetGoals(config)["NormalizationVectorSteps"])
@@ -356,6 +355,14 @@ def _GetGoalAccVectorEnd(config):
 
     return int(_GetGoals(config)["GoalAccVectorEnd"])
 
+def _GetGoal3DVectorStart(config):
+
+    return int(_GetGoals(config)["Goal3DVectorStart"])
+
+
+def _GetGoal3DVectorEnd(config):
+
+    return int(_GetGoals(config)["Goal3DVectorEnd"])
 
 def _GetGoalVectorSteps(config):
 
@@ -367,6 +374,12 @@ def _GetNormalizationVector(config):
     import ast
 
     return [n for n in ast.literal_eval(_GetGoals(config)["NormalizationVector"])]
+
+def _GetNormalizationPlane(config):
+
+    import ast
+
+    return [n for n in ast.literal_eval(_GetGoals(config)["NormalizationPlane"])]
 
 
 def GetFilterFunction(config):
@@ -442,6 +455,13 @@ def _GenVariableVectors(p1_start, p1_stop, p2_start, p2_stop, steps):
 
     return list(zip(v1, v2))
 
+def _Gen3DVariableVectors(p1_start, p1_stop, p2_start, p2_stop, p3_start, p3_stop, steps):
+
+    v1 = _GenVector(p1_start, p1_stop, steps)
+    v2 = _GenVector(p2_start, p2_stop, steps)
+    v3 = _GenVector(p3_start, p3_stop, steps)
+
+    return list(zip(v1, v2, v3))
 
 def _GenVectorsVariableGoal(
     g_param_start, g_param_stop, g_acc_start, g_acc_stop, steps, n1, n2
@@ -455,6 +475,17 @@ def _GenVectorsVariableGoal(
 
     return goal_vectors, normalization_vectors
 
+def _Gen3DVectorsVariableGoal(
+    g_param_start, g_param_stop, g_acc_start, g_acc_stop, g_3D_start, g_3D_stop, steps, n1, n2, n3
+):
+
+    goal_vectors = _Gen3DVariableVectors(
+        g_param_start, g_param_stop, g_acc_start, g_acc_stop, g_3D_start, g_3D_stop, steps
+    )
+
+    normalization_plane = [(n1, n2, n3) for _ in range(len(goal_vectors))]
+
+    return goal_vectors, normalization_plane
 
 def _GenVectorsVariableNormilization(
     n_param_start, n_param_stop, n_acc_start, n_acc_stop, steps, g1, g2
@@ -493,6 +524,31 @@ def GetFilterFunctionArgs(config):
             n_param_start, n_param_stop, n_acc_start, n_acc_stop, steps, g1, g2
         )
 
+def Get3DFilterFunctionArgs(config):
+
+    if _GetVariableGoal(config):
+        # Goal vector varies, normilization vector is static
+        g_param_start = _GetGoalParamVectorStart(config)
+        g_param_stop = _GetGoalParamVectorEnd(config)
+        g_acc_start = _GetGoalAccVectorStart(config)
+        g_acc_stop = _GetGoalAccVectorEnd(config)
+        g_3D_start = _GetGoal3DVectorStart(config)
+        g_3D_stop = _GetGoal3DVectorEnd(config)
+        steps = _GetGoalVectorSteps(config)
+        n1, n2, n3 = _GetNormalizationPlane(config)
+        return _Gen3DVectorsVariableGoal(
+            g_param_start, g_param_stop, g_acc_start, g_acc_stop,  g_3D_start,  g_3D_stop, steps, n1, n2, n3
+        )
+    else:
+        n_param_start = _GetNormalizationParamVectorStart(config)
+        n_param_stop = _GetNormalizationParamVectorEnd(config)
+        n_acc_start = _GetNormalizationAccVectorStart(config)
+        n_acc_stop = _GetNormalizationAccVectorEnd(config)
+        steps = _GetNormalizationVectorSteps(config)
+        g1, g2 = _GetGoalVector(config)
+        return _GenVectorsVariableNormilization(
+            n_param_start, n_param_stop, n_acc_start, n_acc_stop, steps, g1, g2
+        )
 
 def _GetTensorflow(config):
 
