@@ -437,22 +437,23 @@ class ClassificationBlockArchitecture(BlockArchitecture):
         from TensorNAS.MLonMCU_eval import mlonmcu_evaluate_model
 
         mlonmcu_args = get_global("mlonmcu_args")
-        mlonmcu_evaluations = mlonmcu_evaluate_model(
-            test_name=test_name,
-            model_name=model_name,
-            logger=logger,
-            metrics=mlonmcu_args["metrics"],
-            platform=mlonmcu_args["platform"],
-            backend=mlonmcu_args["backend"],
-            target=mlonmcu_args["target"],
-            frontend=mlonmcu_args["frontend"],
-            postprcess=mlonmcu_args["postprocess"],
-            feature=mlonmcu_args["feature"],
-            configs=mlonmcu_args["configs"],
-            parllel=mlonmcu_args["parllel"],
-            progress=mlonmcu_args["progress"],
-            verbose=mlonmcu_args["verbose"],
-        )
+        if mlonmcu_args["use_mlonmcu"]:
+            mlonmcu_evaluations = mlonmcu_evaluate_model(
+                test_name=test_name,
+                model_name=model_name,
+                logger=logger,
+                metrics=mlonmcu_args["metrics"],
+                platform=mlonmcu_args["platform"],
+                backend=mlonmcu_args["backend"],
+                target=mlonmcu_args["target"],
+                frontend=mlonmcu_args["frontend"],
+                postprcess=mlonmcu_args["postprocess"],
+                feature=mlonmcu_args["feature"],
+                configs=mlonmcu_args["configs"],
+                parllel=mlonmcu_args["parllel"],
+                progress=mlonmcu_args["progress"],
+                verbose=mlonmcu_args["verbose"],
+            )
 
         try:
             if test_generator is not None:
@@ -484,8 +485,9 @@ class ClassificationBlockArchitecture(BlockArchitecture):
 
         gc.collect()
 
-        for item in mlonmcu_evaluations:
-            evaluation_values.append(item)
+        if mlonmcu_args["use_mlonmcu"]:
+            for item in mlonmcu_evaluations:
+                evaluation_values.append(item)
 
         if verbose:
             print((get_global("mutation_log_string")).format(*evaluation_values))

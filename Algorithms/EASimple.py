@@ -372,11 +372,7 @@ def eaSimple(
             filtered_fitness_row = ["Fitness"]
             writer.writerow(["Gen #{}".format(gen)])
 
-            set_global(
-                "self_mutation_probability",
-                get_global("self_mutation_probability")
-                + (gen - 1) * get_global("variable_mutation_generational_change"),
-            )
+            #set_global("self_mutation_probability",get_global("self_mutation_probability")+ (gen - 1) * get_global("variable_mutation_generational_change"),)
 
             if logger:
                 logger.log("Gen #{}, population: {}".format(gen, len(population)))

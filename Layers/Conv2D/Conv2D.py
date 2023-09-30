@@ -14,8 +14,6 @@ class Layer(Layer):
             activation=self.args.get(self.get_args_enum().ACTIVATION).value(),
             padding=self.args.get(self.get_args_enum().PADDING).value(),
             dilation_rate=self.args.get(self.get_args_enum().DILATION_RATE),
-            kernel_regularizer=gen_regularizer(
-                self.args.get(self.get_args_enum().REGULARIZER)
-            ),
+            kernel_regularizer=gen_regularizer(self.args.get(self.get_args_enum().REGULARIZER)),
             kernel_initializer=self.args.get(self.get_args_enum().INITIALIZER).value(),
         )(input_tensor)

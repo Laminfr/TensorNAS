@@ -222,8 +222,7 @@ def gen_regularizer(value=None):
     if value:
         if value[0] != ArgRegularizers.NONE:
             import tensorflow as tf
-
-            value = eval("tf.keras.regularizers.{}".format(value[0]))(
+            value = eval("tf.keras.regularizers.{}".format(value[0]._value_))(
                 *(value[1] if isinstance(value[1], list) else [value[1]])
             )
 
