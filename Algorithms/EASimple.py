@@ -255,9 +255,7 @@ def eaSimple(
                 fitnesses.append(ret)
 
         for count, (ind, fit) in enumerate(zip(invalid_ind, fitnesses)):
-            for item in reversed(fit):
-                ind.block_architecture.evaluation_values.append(item)  # fit[] is iterated in reverse
-
+            ind.block_architecture.evaluation_values=fit
             # Assign individuals an index so they can be copied in output folder structure if taken to next gen
             ind.index = count
 
@@ -272,7 +270,7 @@ def eaSimple(
                 ind.fitness.values = fit
 
             if (
-                fit[0] is not math.inf and fit[1] is not 0
+                fit[0] != math.inf and fit[1] != 0
             ):  # this needs goal generalization
                 for i in range(get_global("goals_number")):
                     raw_evaluated_values_row[i].append(fit[i])
@@ -349,7 +347,7 @@ def eaSimple(
         if individualrecord:
             individualrecord.add_gen(population)
 
-        if halloffame is not None:
+        if halloffame != None:
             halloffame.update(population)
 
         record = stats.compile(population) if stats else {}
@@ -517,7 +515,7 @@ def eaSimple(
             assignCrowdingDist(offspring)
 
             # Update the hall of fame with the generated individuals
-            if halloffame is not None:
+            if halloffame != None:
                 halloffame.update(offspring)
 
             # Replace the current population by the offspring
@@ -529,8 +527,8 @@ def eaSimple(
             for i in population:
                 if (
                     i.block_architecture.evaluation_values[0]
-                    is not math.inf  # this needs goal generalization
-                    and i.block_architecture.evaluation_values[1] is not 0
+                    != math.inf  # this needs goal generalization
+                    and i.block_architecture.evaluation_values[1] != 0
                 ):
                     for j in range(get_global("goals_number")):
                         raw_evaluated_values_row[j].append(

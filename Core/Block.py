@@ -162,6 +162,13 @@ class BaseBlock(ABC):
                 args = new_dict
 
         try:
+            # =====for debugging purpose===============
+            all_funcs = [
+                func
+                for func in dir(self)
+                if callable(getattr(self, func))
+            ]
+            # =========================================
             self.mutation_funcs = [
                 func
                 for func in dir(self)
@@ -264,12 +271,15 @@ class BaseBlock(ABC):
          random mutation of a sub block by invoking mutate_subblock
         """
         if len(self.mutation_funcs) > 0:
-            return self._invoke_random_mutation_function(
+            # =====for debugging purpose===============
+            ret = self._invoke_random_mutation_function(
                 mutate_with_reinforcement_learning=mutate_with_reinforcement_learning,
                 mutation_goal_index=mutation_goal_index,
                 goal_attainment=goal_attainment,
                 verbose=verbose,
             )
+            # =========================================
+            return ret
 
     def mutate(
         self,
@@ -660,8 +670,10 @@ class BaseBlock(ABC):
 
     def _get_random_sub_block_inc_self(self):
         blocks = self._get_all_sub_blocks_inc_self()
-
-        return random.choice(blocks)
+        # =====for debugging purpose===============
+        random_block = random.choice(blocks)
+        # =========================================
+        return random_block
 
     def _get_all_sub_blocks_inc_self(self):
         blocks = [self]
