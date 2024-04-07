@@ -261,10 +261,6 @@ class BlockArchitecture(Block):
                     vbatch_size = validation_len
                 else:
                     vbatch_size = batch_size
-                # =DEBUG===
-                from tensorflow.keras.utils import plot_model
-                plot_model(model, to_file='/home/amine/Documents/nas/nas_mutation_func_adjus/TensorNAS-Project/Output/model_plots/model.png', show_shapes=True)
-                
                 model.fit(
                     x=train_generator,
                     batch_size=batch_size,
@@ -276,20 +272,6 @@ class BlockArchitecture(Block):
                     validation_steps=validation_len // vbatch_size,
                     verbose=verbose,
                 )
-                # =========
-                """
-                model.fit(
-                    x=train_generator,
-                    batch_size=batch_size,
-                    epochs=epochs,
-                    steps_per_epoch=train_len // batch_size,
-                    callbacks=callbacks,
-                    validation_data=validation_generator,
-                    validation_batch_size=vbatch_size,
-                    validation_steps=validation_len // vbatch_size,
-                    verbose=verbose,
-                )
-                """
             else:
                 raise Exception("Missing training data")
 
